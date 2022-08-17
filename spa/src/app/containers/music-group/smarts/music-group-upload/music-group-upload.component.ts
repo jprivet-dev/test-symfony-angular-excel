@@ -2,6 +2,7 @@ import { Component, OnDestroy } from '@angular/core';
 import { MusicGroupUploadService } from '@shared/services/music-group-upload.service';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
+import { ToastService } from '@shared/services/toast.service';
 
 @Component({
   selector: 'app-music-group-upload',
@@ -12,19 +13,21 @@ export class MusicGroupUploadComponent implements OnDestroy {
   private invalidMessageSubject = new BehaviorSubject<string | null>(null);
   readonly invalidMessage$ = this.invalidMessageSubject.asObservable();
 
-  successMessage: string = '';
-
   private subscription: Subscription = new Subscription();
 
-  constructor(private uploadService: MusicGroupUploadService) {}
+  constructor(
+    private uploadService: MusicGroupUploadService,
+    private toastService: ToastService
+  ) {}
 
   onFileSelected(file: File): void {
     this.invalidMessageSubject.next(null);
 
     this.subscription = this.uploadService.upload(file).subscribe(
       (response) => {
-        console.log(response);
-        this.successMessage = `Le fichier ${response.filename} a bien été téléchargé.`;
+        this.toastService.success(
+          `Le fichier ${response.filename} a bien été téléchargé.`
+        );
       },
       (error: HttpErrorResponse) => {
         this.invalidMessageSubject.next(error.error.message);
