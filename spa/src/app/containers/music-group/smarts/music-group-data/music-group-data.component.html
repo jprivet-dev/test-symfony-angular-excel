@@ -1,1 +1,30 @@
-<p>music-group-data works!</p>
+<table class="table table-striped" style="font-size: 0.8rem">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Nom du groupe</th>
+      <th scope="col">Origine</th>
+      <th scope="col">Ville</th>
+      <th scope="col">Année début</th>
+      <th scope="col">Année séparation</th>
+      <th scope="col">Fondateurs</th>
+      <th scope="col">Membres</th>
+      <th scope="col">Courant musical</th>
+      <th scope="col">Présentation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let d of data$ | async; index as i">
+      <th scope="row">{{ i + 1 }}</th>
+      <td>{{ d.nomDuGroupe }}</td>
+      <td>{{ d.origine }}</td>
+      <td>{{ d.ville }}</td>
+      <td>{{ year(d.anneeDebut) }}</td>
+      <td>{{ year(d.anneeSeparation) }}</td>
+      <td>{{ d.fondateurs }}</td>
+      <td>{{ membres(d.membres) }}</td>
+      <td>{{ d.courantMusical }}</td>
+      <td>{{ d.presentation }}</td>
+    </tr>
+  </tbody>
+</table>
