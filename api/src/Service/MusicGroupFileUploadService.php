@@ -16,7 +16,7 @@ class MusicGroupFileUploadService
     ) {
     }
 
-    public function save(UploadedFile $uploadedFile): void
+    public function save(UploadedFile $uploadedFile): MusicGroupFileUpload
     {
         $filename = $this->upload($uploadedFile);
 
@@ -24,6 +24,8 @@ class MusicGroupFileUploadService
         $file->setFilename($filename);
 
         $this->repository->add($file, true);
+
+        return $file;
     }
 
     private function upload(UploadedFile $uploadedFile): string
