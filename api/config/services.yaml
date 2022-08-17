@@ -26,3 +26,7 @@ services:
     App\Service\MusicGroupFileUploadService:
         arguments:
             $uploadsDirectory: '%uploads_directory%'
+            
+    App\Service\MusicGroupImportService:
+        arguments:
+            $uploadsDirectory: '%uploads_directory%'
