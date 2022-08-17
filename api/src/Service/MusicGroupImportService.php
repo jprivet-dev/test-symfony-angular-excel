@@ -42,6 +42,7 @@ class MusicGroupImportService
 
             if (count($result) > 0) {
                 $this->stats['alreadyExistsCount']++;
+
                 return;
             }
 
@@ -70,17 +71,22 @@ class MusicGroupImportService
 
     private function string(?string $value): ?string
     {
+        $value = htmlentities($value, null, 'utf-8');
+        $value = str_replace("&nbsp;", ' ', $value);
+        $value = html_entity_decode($value);
+
         return trim($value) ?? null;
     }
 
     private function integer(?string $value): ?int
     {
-        return (int) trim($value) ?? null;
+        return (int)trim($value) ?? null;
     }
 
     private function yearToDateTime(?string $year): ?\DateTimeImmutable
     {
         $year = trim($year);
+
         return $year ? \DateTimeImmutable::createFromFormat('Y', $year) : null;
     }
 
