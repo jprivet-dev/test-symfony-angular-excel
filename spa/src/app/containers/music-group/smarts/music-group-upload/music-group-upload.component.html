@@ -1,1 +1,8 @@
-<app-music-group-file-upload-form></app-music-group-file-upload-form>
+<app-music-group-file-upload-form
+  [invalidMessage]="invalidMessage$ | async"
+  (fileSelectedEvent)="onFileSelected($event)"
+></app-music-group-file-upload-form>
+
+<p>
+  {{ successMessage }}
+</p>
