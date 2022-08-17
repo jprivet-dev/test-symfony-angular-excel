@@ -3,6 +3,8 @@ import { MusicGroupDataService } from '@shared/services/music-group-data.service
 import { Subscription } from 'rxjs';
 import { MusicGroupData } from '@shared/music-group-data.model';
 import { ToastService } from '@shared/services/toast.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { MusicGroupDataModalComponent } from '@containers/music-group/smarts/music-group-data-modal/music-group-data-modal.component';
 
 @Component({
   selector: 'app-music-group-data',
@@ -15,7 +17,8 @@ export class MusicGroupDataComponent implements OnDestroy {
 
   constructor(
     private dataService: MusicGroupDataService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private modalService: NgbModal
   ) {}
 
   year(date: string): string {
@@ -35,6 +38,11 @@ export class MusicGroupDataComponent implements OnDestroy {
         );
       });
     }
+  }
+
+  open(): void {
+    const modalRef = this.modalService.open(MusicGroupDataModalComponent);
+    modalRef.componentInstance.name = 'World';
   }
 
   ngOnDestroy(): void {
