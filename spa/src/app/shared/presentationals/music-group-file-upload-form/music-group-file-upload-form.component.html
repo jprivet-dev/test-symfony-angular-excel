@@ -1,9 +1,21 @@
-<form action="">
-  <div class="mb-3">
-    <label for="formFile" class="form-label">Choisir un fichier Excel</label>
-    <input class="form-control" type="file" id="formFile" />
+<div class="mb-3">
+  <input
+    class="form-control"
+    type="file"
+    id="fileUpload"
+    #fileUpload
+    [class.is-invalid]="invalidMessage"
+    (change)="onFileSelected($event)"
+  />
+  <div id="fileUploadFeedback" class="invalid-feedback">
+    {{ invalidMessage }}
   </div>
-  <button type="submit" class="btn btn-primary">
-    Télécharger le fichier Excel
-  </button>
-</form>
+</div>
+<button
+  type="submit"
+  class="btn btn-primary"
+  [disabled]="disabled"
+  (click)="onSubmit()"
+>
+  Télécharger le fichier Excel
+</button>
