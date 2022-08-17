@@ -21,4 +21,16 @@ export class MusicGroupDataService {
   load(): Observable<MusicGroupData[]> {
     return this.read().pipe(tap((response) => this.dataSubject.next(response)));
   }
+
+  delete(data: MusicGroupData): Observable<null> {
+    return this.http
+      .delete<null>(`https://localhost/api/music-groups/data/${data.id}`)
+      .pipe(
+        tap(() =>
+          this.dataSubject.next(
+            this.dataSubject.value.filter((d) => d.id !== data.id)
+          )
+        )
+      );
+  }
 }
