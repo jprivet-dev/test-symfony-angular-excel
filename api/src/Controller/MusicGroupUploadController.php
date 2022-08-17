@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Form\MusicGroupFileUploadType;
 use App\Service\MusicGroupFileUploadService;
+use App\Service\MusicGroupImportService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Exception\InvalidArgumentException;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -18,6 +19,7 @@ class MusicGroupUploadController extends AbstractController
     public function upload(
         Request $request,
         MusicGroupFileUploadService $fileUpload,
+        MusicGroupImportService $importService,
         SerializerInterface $serializer
     ): JsonResponse {
         $requestFile = $request->files->get('file');
@@ -36,6 +38,10 @@ class MusicGroupUploadController extends AbstractController
             }
 
             $file = $fileUpload->save($uploadedFile);
+
+            // TODO: trouver la meilleure approche pour fusionner les stats dans la réponse json.
+            $stats = $importService->import($file);
+
             $json = $serializer->serialize($file, 'json');
 
             return new JsonResponse($json, Response::HTTP_CREATED, [], true);
