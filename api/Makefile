@@ -79,8 +79,35 @@ cc: sf
 
 ## —— Doctrine 💽 ——————————————————————————————————————————————————————————————
 
-migration: ## Run a doctrine migration
+doctrine_db_create: ## Create the configured database.
+	$(SYMFONY) doctrine:database:create --if-not-exists
+
+doctrine_db_drop: ## Drop the configured database.
+	$(SYMFONY) doctrine:database:drop --if-exists --force
+
+doctrine_schema_validate: ## Validate the mapping files.
+	$(SYMFONY) doctrine:schema:validate
+
+doctrine_mapping_info: ## List mapped entities.
+	$(SYMFONY) doctrine:mapping:info
+
+##
+
+doctrine_migration_new: ## Make a new migration.
 	$(SYMFONY) make:migration
+
+doctrine_migration_diff: ## Generate a migration by comparing your current database to your mapping information.
+	$(SYMFONY) doctrine:migrations:diff
+
+doctrine_migration_run: ## Execute a migration to the latest available version.
+	$(SYMFONY) doctrine:migrations:migrate
+
+doctrine_migration_update: doctrine_migration_new doctrine_migration_run ## Make a new migration and run it.
+
+doctrine_fixtures_load: ## Load fixtures.
+	$(SYMFONY) doctrine:fixtures:load
+
+doctrine_db_reset: doctrine_db_drop doctrine_db_create doctrine_migration_run ## Drop & Create the configured database & Execute a migration.
 
 ## —— Troubleshooting 😵‍️ ———————————————————————————————————————————————————————
 
