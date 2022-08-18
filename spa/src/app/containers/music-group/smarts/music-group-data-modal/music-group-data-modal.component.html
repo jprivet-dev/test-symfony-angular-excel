@@ -1,5 +1,8 @@
 <div class="modal-header">
-  <h4 class="modal-title">Ajouter un groupe</h4>
+  <h4 class="modal-title">
+    <span *ngIf="updateMode">Modifier le groupe</span>
+    <span *ngIf="!updateMode">Ajouter un groupe</span>
+  </h4>
   <button
     type="button"
     class="btn-close"
@@ -9,6 +12,7 @@
 </div>
 <div class="modal-body">
   <app-music-group-data-form
+    [data]="data"
     (submitEvent)="close()"
   ></app-music-group-data-form>
 </div>

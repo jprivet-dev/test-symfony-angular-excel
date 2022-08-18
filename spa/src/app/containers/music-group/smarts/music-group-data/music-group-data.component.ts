@@ -40,6 +40,11 @@ export class MusicGroupDataComponent implements OnDestroy {
     }
   }
 
+  update(data: MusicGroupData): void {
+    const modalRef = this.modalService.open(MusicGroupDataModalComponent);
+    modalRef.componentInstance.data = data;
+  }
+
   open(): void {
     const modalRef = this.modalService.open(MusicGroupDataModalComponent);
   }
