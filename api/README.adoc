@@ -1,0 +1,19 @@
+= Test Symfony Angular Excel
+
+== Installation
+
+. `$ git clone git@github.com:jprivet-dev/test-symfony-angular-excel.git`
+. `$ cd api`
+. Créer (juste la première fois) l'image docker `$ make build`
+. Démarrer le projet `$ make start`
+. Aller sur https://localhost
+. Pour stopper le conteneur `$ make down`
+
+== Ressources
+
+=== Autres
+
+* https://github.com/dunglas/symfony-docker
+* https://github.com/dunglas/symfony-docker/blob/main/docs/makefile.md
+* https://github.com/dunglas/symfony-docker/blob/main/docs/troubleshooting.md
+* https://emojipedia.org/
