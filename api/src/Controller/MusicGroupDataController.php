@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 
 class MusicGroupDataController extends AbstractController
@@ -51,5 +52,27 @@ class MusicGroupDataController extends AbstractController
         $json = $serializer->serialize($data, 'json');
 
         return new JsonResponse($json, Response::HTTP_CREATED, [], true);
+    }
+
+    #[Route('/api/music-groups/data/{id}', name: 'app_music_groups_data_update', methods: ['PUT'])]
+    public function update(
+        Request $request,
+        MusicGroupData $currentData,
+        MusicGroupDataRepository $dataRepository,
+        SerializerInterface $serializer
+    ): JsonResponse {
+        $data = $serializer->deserialize(
+            $request->getContent(),
+            MusicGroupData::class,
+            'json',
+            [AbstractNormalizer::OBJECT_TO_POPULATE => $currentData]
+        );
+
+        // TODO: vérifier que le nom du groupe mis à jour n'existe n'est pas déjà pris.
+
+        $dataRepository->add($data, true);
+        $json = $serializer->serialize($data, 'json');
+
+        return new JsonResponse($json, Response::HTTP_OK, [], true);
     }
 }
