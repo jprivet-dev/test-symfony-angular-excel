@@ -13,12 +13,11 @@ import {
   styleUrls: ['./music-group-file-upload-form.component.scss'],
 })
 export class MusicGroupFileUploadFormComponent {
-  disabled: boolean = true;
-  file!: File;
-
   @ViewChild('fileUpload') fileUpload!: ElementRef;
   @Input() invalidMessage: string | null = null;
   @Output() fileSelectedEvent = new EventEmitter<File>();
+  disabled: boolean = true;
+  file!: File;
 
   onFileSelected(event: Event): void {
     const target = event.target as HTMLInputElement;
