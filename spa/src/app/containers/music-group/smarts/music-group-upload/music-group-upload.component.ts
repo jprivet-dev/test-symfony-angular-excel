@@ -33,7 +33,7 @@ export class MusicGroupUploadComponent implements OnInit, OnDestroy {
     this.uploadSubscription = this.uploadService.upload(file).subscribe(
       (response) => {
         this.toastService.success(
-          `Le fichier ${response.filename} a bien été téléchargé.`
+          `Le fichier ${response.filename} a été téléchargé.`
         );
 
         this.loadData();

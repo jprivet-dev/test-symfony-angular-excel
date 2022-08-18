@@ -8,6 +8,8 @@ import { MusicGroupData } from '@shared/music-group-data.model';
   styleUrls: ['./music-group-data-modal.component.scss'],
 })
 export class MusicGroupDataModalComponent implements OnInit {
+  // TODO: Nous avons là un composant hybride smart/presentational. Réfléchir à une approche plus propre entre la modal et le formulaire.
+
   @Input() data!: MusicGroupData;
   updateMode: boolean = false;
 

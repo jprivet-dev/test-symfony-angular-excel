@@ -1,16 +1,15 @@
 <form [formGroup]="form" (ngSubmit)="onSubmit()">
   <div class="mb-3">
-    <label for="nomDuGroupeInput" class="form-label">Nom du groupe</label>
+    <label for="nomDuGroupeInput" class="form-label required">Nom du groupe</label>
     <input
       type="text"
       class="form-control"
       id="nomDuGroupeInput"
       formControlName="nomDuGroupe"
       [class.is-invalid]="nomDuGroupeIsInvalid()"
+      required
     />
-    <div
-      *ngIf="nomDuGroupeIsInvalid()" class="invalid-feedback"
-    >
+    <div *ngIf="nomDuGroupeIsInvalid()" class="invalid-feedback">
       <div *ngIf="nomDuGroupe.errors?.required">
         Le nom du groupe est requis.
       </div>
@@ -44,19 +43,32 @@
       class="form-control"
       id="anneeDebutInput"
       formControlName="anneeDebut"
+      [class.is-invalid]="anneeDebutIsInvalid()"
     />
+    <div *ngIf="anneeDebutIsInvalid()" class="invalid-feedback">
+      <div *ngIf="anneeDebut.errors?.required">
+        L'année début est requise.
+      </div>
+      <div *ngIf="anneeDebut.errors?.pattern">
+        L'année début doit être valide (ex: 1998).
+      </div>
+    </div>
   </div>
 
   <div class="mb-3">
-    <label for="anneeSeparationInput" class="form-label"
-      >Année séparation</label
-    >
+    <label for="anneeSeparationInput" class="form-label">Année séparation</label>
     <input
       type="text"
       class="form-control"
       id="anneeSeparationInput"
       formControlName="anneeSeparation"
+      [class.is-invalid]="anneeSeparationIsInvalid()"
     />
+    <div *ngIf="anneeSeparationIsInvalid()" class="invalid-feedback">
+      <div *ngIf="anneeSeparation.errors?.pattern">
+        L'année séparation doit être valide (ex: 1998).
+      </div>
+    </div>
   </div>
 
   <div class="mb-3">
@@ -99,12 +111,18 @@
     ></textarea>
   </div>
 
-  <div class="alert alert-danger" role="alert" *ngIf="errorMessage">
+  <div class="alert alert-danger mb-3" role="alert" *ngIf="errorMessage">
     {{ errorMessage }}
   </div>
 
-  <button type="submit" class="btn btn-primary btn-sm" [disabled]="!form.valid">
-    <span *ngIf="updateMode">Modifier le groupe</span>
-    <span *ngIf="!updateMode">Ajouter un groupe</span>
-  </button>
+  <div class="text-end">
+    <button
+      type="submit"
+      class="btn btn-primary"
+      [disabled]="!form.valid"
+    >
+      <span *ngIf="updateMode">Modifier le groupe</span>
+      <span *ngIf="!updateMode">Ajouter un groupe</span>
+    </button>
+  </div>
 </form>

@@ -56,6 +56,7 @@ class MusicGroupImportService
     {
         $data = new MusicGroupData();
 
+        // TODO: utiliser plutôt le serializer pour le formatage des données.
         $data->setNomDuGroupe($this->string($row[self::NOM_DU_GROUPE]));
         $data->setOrigine($this->string($row[self::ORIGINE]));
         $data->setVille($this->string($row[self::VILLE]));

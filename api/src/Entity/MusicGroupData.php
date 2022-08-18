@@ -17,13 +17,13 @@ class MusicGroupData
     #[ORM\Column(length: 255)]
     private ?string $nomDuGroupe = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $origine = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $ville = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $anneeDebut = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
@@ -38,7 +38,7 @@ class MusicGroupData
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $courantMusical = null;
 
-    #[ORM\Column(type: Types::TEXT)]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $presentation = null;
 
     public function getId(): ?int
@@ -63,7 +63,7 @@ class MusicGroupData
         return $this->origine;
     }
 
-    public function setOrigine(string $origine): self
+    public function setOrigine(?string $origine): self
     {
         $this->origine = $origine;
 
@@ -75,7 +75,7 @@ class MusicGroupData
         return $this->ville;
     }
 
-    public function setVille(string $ville): self
+    public function setVille(?string $ville): self
     {
         $this->ville = $ville;
 
@@ -87,7 +87,7 @@ class MusicGroupData
         return $this->anneeDebut;
     }
 
-    public function setAnneeDebut(\DateTimeInterface $anneeDebut): self
+    public function setAnneeDebut(?\DateTimeInterface $anneeDebut): self
     {
         $this->anneeDebut = $anneeDebut;
 
@@ -147,7 +147,7 @@ class MusicGroupData
         return $this->presentation;
     }
 
-    public function setPresentation(string $presentation): self
+    public function setPresentation(?string $presentation): self
     {
         $this->presentation = $presentation;
 

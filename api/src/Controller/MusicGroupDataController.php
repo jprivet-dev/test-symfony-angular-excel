@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
+use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 
 class MusicGroupDataController extends AbstractController
@@ -19,7 +20,7 @@ class MusicGroupDataController extends AbstractController
     public function read(MusicGroupDataRepository $dataRepository, SerializerInterface $serializer): JsonResponse
     {
         $data = $dataRepository->findAll();
-        $json = $serializer->serialize($data, 'json');
+        $json = $this->getJson($serializer, $data);
 
         return new JsonResponse($json, Response::HTTP_OK, [], true);
     }
@@ -38,6 +39,8 @@ class MusicGroupDataController extends AbstractController
         MusicGroupDataRepository $dataRepository,
         SerializerInterface $serializer
     ): JsonResponse {
+
+        /** @var MusicGroupData $data */
         $data = $serializer->deserialize($request->getContent(), MusicGroupData::class, 'json');
 
         $alreadyExists = $dataRepository->findBy([
@@ -49,7 +52,7 @@ class MusicGroupDataController extends AbstractController
         }
 
         $dataRepository->add($data, true);
-        $json = $serializer->serialize($data, 'json');
+        $json = $this->getJson($serializer, $data);
 
         return new JsonResponse($json, Response::HTTP_CREATED, [], true);
     }
@@ -71,8 +74,16 @@ class MusicGroupDataController extends AbstractController
         // TODO: vérifier que le nom du groupe mis à jour n'existe n'est pas déjà pris.
 
         $dataRepository->add($data, true);
-        $json = $serializer->serialize($data, 'json');
+        $json = $this->getJson($serializer, $data);
 
         return new JsonResponse($json, Response::HTTP_OK, [], true);
+    }
+
+    private function getJson(SerializerInterface $serializer, array|MusicGroupData $data): string
+    {
+        // TODO: Tricks. À définir plutôt dans un custom serializer dédier à MusicGroupData (uniquement pour anneeDebut & anneeSeparation).
+        return $serializer->serialize($data, 'json', [
+            DateTimeNormalizer::FORMAT_KEY => 'Y',
+        ]);
     }
 }

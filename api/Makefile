@@ -49,6 +49,8 @@ build: ## Builds the Docker images
 up: ## Start the docker hub
 	@$(DOCKER_COMP) up
 
+start: up ## Same as up
+
 down: ## Stop the docker hub
 	@$(DOCKER_COMP) down --remove-orphans
 

@@ -11,6 +11,7 @@ import { MusicGroupDataService } from '@shared/services/music-group-data.service
 import { Subscription } from 'rxjs';
 import { ToastService } from '@shared/services/toast.service';
 import { MusicGroupData } from '@shared/music-group-data.model';
+import { emptyToNull } from '@shared/utils';
 
 @Component({
   selector: 'app-music-group-data-form',
@@ -18,6 +19,8 @@ import { MusicGroupData } from '@shared/music-group-data.model';
   styleUrls: ['./music-group-data-form.component.scss'],
 })
 export class MusicGroupDataFormComponent implements OnInit, OnDestroy {
+  // TODO: Nous avons là un composant hybride smart/presentational. Réfléchir à une approche plus propre entre la modal et le formulaire.
+
   @Input() data!: MusicGroupData;
   @Output() submitEvent = new EventEmitter();
   errorMessage: string = '';
@@ -29,8 +32,8 @@ export class MusicGroupDataFormComponent implements OnInit, OnDestroy {
     nomDuGroupe: ['', [Validators.required]],
     origine: '',
     ville: '',
-    anneeDebut: '',
-    anneeSeparation: '',
+    anneeDebut: ['', [Validators.pattern(`^[1-9][0-9]{3}$`)]],
+    anneeSeparation: ['', [Validators.pattern(`^[1-9][0-9]{3}$`)]],
     fondateurs: '',
     membres: 0,
     courantMusical: '',
@@ -61,7 +64,29 @@ export class MusicGroupDataFormComponent implements OnInit, OnDestroy {
     );
   }
 
-  // TODO: gérer la validation des autres champs comme 'nomDuGroupe'.
+  get anneeDebut(): any {
+    return this.form.get('anneeDebut');
+  }
+
+  anneeDebutIsInvalid(): any {
+    return (
+      !this.anneeDebut?.valid &&
+      (this.anneeDebut?.dirty || this.anneeDebut?.touched)
+    );
+  }
+
+  get anneeSeparation(): any {
+    return this.form.get('anneeSeparation');
+  }
+
+  anneeSeparationIsInvalid(): any {
+    return (
+      !this.anneeSeparation?.valid &&
+      (this.anneeSeparation?.dirty || this.anneeSeparation?.touched)
+    );
+  }
+
+  // TODO: Gérer la validation des autres champs comme 'nomDuGroupe'.
 
   onSubmit(): void {
     this.errorMessage = '';
@@ -75,12 +100,12 @@ export class MusicGroupDataFormComponent implements OnInit, OnDestroy {
 
   create() {
     this.createSubscription = this.dataService
-      .create(this.form.value)
+      .create(emptyToNull(this.form.value))
       .subscribe(
         (data) => {
           this.form.reset();
           this.toastService.success(
-            `Le groupe "${data.nomDuGroupe}" a bien été créé.`
+            `Le groupe "${data.nomDuGroupe}" a été créé.`
           );
           this.submitEvent.emit();
         },
@@ -92,12 +117,12 @@ export class MusicGroupDataFormComponent implements OnInit, OnDestroy {
 
   update() {
     this.updateSubscription = this.dataService
-      .update(this.data.id, this.form.value)
+      .update(this.data.id, emptyToNull(this.form.value))
       .subscribe(
         (data) => {
           this.form.reset();
           this.toastService.success(
-            `Le groupe "${data.nomDuGroupe}" a bien été mis à jour.`
+            `Le groupe "${data.nomDuGroupe}" a été mis à jour.`
           );
           this.submitEvent.emit();
         },

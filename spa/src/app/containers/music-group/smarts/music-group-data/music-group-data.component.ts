@@ -22,8 +22,7 @@ export class MusicGroupDataComponent implements OnDestroy {
   ) {}
 
   year(date: string): string {
-    // TODO: cette donnée doit être renvoyée directement par l'API. Voir avec le serializer.
-    return date ? date.split('-')[0] : '';
+    return date ? date : '';
   }
 
   membres(membres: number): string {
@@ -34,7 +33,7 @@ export class MusicGroupDataComponent implements OnDestroy {
     if (confirm(`Souhaitez-vous supprimer le groupe "${data.nomDuGroupe}" ?`)) {
       this.deleteSubscription = this.dataService.delete(data).subscribe(() => {
         this.toastService.success(
-          `Le groupe "${data.nomDuGroupe}" a bien été supprimé`
+          `Le groupe "${data.nomDuGroupe}" a été supprimé.`
         );
       });
     }

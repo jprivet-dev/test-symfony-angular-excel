@@ -11,6 +11,8 @@ import { ToastService } from '@shared/services/toast.service';
   },
 })
 export class ToastsComponent {
+  // TODO: Ce composant pourrait être placé plutôt dans le dossier core.
+
   constructor(public toastService: ToastService) {}
 
   isTemplate(toast: any) {
