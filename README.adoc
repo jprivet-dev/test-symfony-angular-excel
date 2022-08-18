@@ -77,6 +77,10 @@ $ cd test-symfony-angular-excel
 . Démarrer le projet `$ make start`
 . Aller sur https://localhost
 
+
+IMPORTANT: Au chargement du fichier Excel, vous risquez d'avoir cette erreur suivante `Unable to write in the "/srv/app/public/uploads" directory.`. Je n'ai pas réussi à régler ce souci directement dans le fichier Docker. La solution provisoire est d'exécuter dans `test-symfony-angular-excel/api` la commande `$ sudo chmod -R 777 public`.
+
+
 Pour éviter une erreur du type `GET https://localhost/api/music-groups/data net::ERR_CERT_AUTHORITY_INVALID` qui bloquera la récupération des données, autorisez l'accès dans Chrome à l'API, en allant sur https://localhost, et en cliquant sur le bouton *Continuer vers le site localhost (dangereux)* :
 
 image::doc/img/chrome-erreur-confidentialite.png[]
