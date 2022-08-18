@@ -61,7 +61,92 @@ En tant qu’utilisateur, je souhaite pouvoir :
 * Fournir une archive avec le code source et un dump de la BDD.
 * Le code doit être accessible sur un repository en ligne (github par exemple).
 
-== Plan d'actions techniques
+== Installation complète
+
+=== Clonage du projet
+
+```
+$ git clone git@github.com:jprivet-dev/test-symfony-angular-excel.git
+$ cd test-symfony-angular-excel
+```
+
+=== L'API (Symfony)
+
+. À partir du dossier `test-symfony-angular-excel` : `$ cd api`
+. Créer (juste la première fois) l'image docker `$ make build`
+. Démarrer le projet `$ make start`
+. Aller sur https://localhost
+
+Pour éviter une erreur du type `GET https://localhost/api/music-groups/data net::ERR_CERT_AUTHORITY_INVALID` qui bloquera la récupération des données, autorisez l'accès dans Chrome à l'API, en allant sur https://localhost, et en cliquant sur le bouton *Continuer vers le site localhost (dangereux)* :
+
+image::doc/img/chrome-erreur-confidentialite.png[]
+
+=== La SPA (Angular)
+
+. À partir du dossier `test-symfony-angular-excel` : `$ cd spa`
+. `$ make start`
+. Aller sur http://localhost:4200
+
+{back_to_top}
+
+=== Récupérer les requêtes Insomnia
+
+Retrouver les requêtes Insomnia pour tester l'API sur https://github.com/jprivet-dev/test-symfony-angular-excel-insomnia.
+
+Il faut forker ce dépôt et suivre les instructions sur https://docs.insomnia.rest/insomnia/git-sync.
+
+== Présentation générale de la fonctionnalité développée
+
+=== Cas #1 : import du fichier Excel
+
+Dans un premier temps, le fichier excel est téléchargé sur le serveur.
+Dans un second temps, les données sont extraites du fichier et enregistrées en BDD.
+
+image::doc/img/1-import-fichier-excel.gif[]
+
+{back_to_top}
+
+=== Cas #2 : création sommaire du groupe Miaou
+
+image::doc/img/2-creation-groupe-miaou.gif[]
+
+{back_to_top}
+
+=== Cas #3 : suppression des deux premiers groupes de la liste
+
+image::doc/img/3-suppression-deux-premiers-groupes.gif[]
+
+{back_to_top}
+
+=== Cas #4 : réimport du fichier Excel
+
+On importe uniquement les lignes du fichier Excel qui n'existent pas en BDD. On récupère ainsi les deux premiers groupes supprimés précédemment :
+
+image::doc/img/4-reimport-fichier-excel.gif[]
+
+{back_to_top}
+
+=== Cas #5 : modification du groupe Miaou
+
+image::doc/img/5-modification-groupe-miaou.gif[]
+
+{back_to_top}
+
+=== Cas #6 : création du groupe Nirvana
+
+Retour d'un message d'erreur de l'API parce que Nirvana existe déjà en BDD :
+
+image::doc/img/6-creation-groupe-nirvana-2.gif[]
+
+{back_to_top}
+
+=== Cas #7 : modification d'un groupe importé
+
+image::doc/img/7-modification-groupe-purple-floyd.gif[]
+
+{back_to_top}
+
+== Plan d'action technique avant implémentation
 
 Suite à ces instructions, voici le plan d'action technique que j'ai mis en place.
 Ce plan me permet d'avoir une phase de recherche bien en amont du développement, pour ensuite implémenter le tout avec plus de fluidité.
@@ -76,12 +161,16 @@ Je n'ai sincèrement aucune idée du temps que je vais mettre à l'exécution, e
 * Utilisation d'Insomnia pour réaliser les tests avec l'API (https://insomnia.rest/).
 * Création un repo GitHub (`test-symfony-angular-excel-insomnia`) pour enregistrer et partager les requêtes.
 
+{back_to_top}
+
 ==== Projet monolithique (API & SPA)
 
 Afin de facilité le partage et la relecture de ce test, je créerai sur mon compte GitHub un projet monolithique (`test-symfony-angular-excel`), qui contiendra l'API (Symfony) et la SPA (Angular).
 De plus le projet sera entièrement dockerisé, pour permettre à quiconque d'installer et de tester ce projet sur son poste.
 
 Dans le cadre d'un projet de plus grande envergure, il serait préférable de séparer l'API et la SPA dans deux dépôts différents, afin de pouvoir faire évoluer et versionner les deux projets indépendamment.
+
+{back_to_top}
 
 ==== L'utilisation des tests automatiques
 
@@ -92,15 +181,19 @@ Pour le moment je ne me soucie pas de ces tests automatiques. Cela me semble ove
 Évidemment, dans le cadre d'un projet plus important, mon approche ne serait plus viable et l'usage de tests automatiques serait indispensables.
 Je garde ce point dans les bonus (voir à la fin de ce README).
 
-==== API : Symfony 6, PHP8 & Docker
+{back_to_top}
 
-. Création d'un projet vide avec Symfony 6 & PHP8.
+==== API : Symfony 6, PHP 8 & Docker
+
+. Création d'un projet vide avec Symfony 6 & PHP 8.
 . Dockerisation du projet avec https://github.com/dunglas/symfony-docker.
 . Usage des codes générés avec Symfony CLI.
 . Utilisation très basique du Service Layer Pattern, avec du MVC et une extraction de la logique métier dans les services.
 . Limitation au niveau 2 du modèle de maturité de Richardson (CRUD + Méthodes HTTP). Pas de niveau 3 avec une API autodécouvrable (overkill pour ce test).
 . Pour ce test, pas de gestion des utilisateurs, avec authentification, pour limiter l'accès aux fonctionnalités. Ce sera en bonus, s'il me reste du temps pour cela.
 . Usage de la mise en forme automatique de PHPStorm, avec le formatage par défaut de Symfony (https://www.jetbrains.com/help/phpstorm/symfony-support.html).
+
+{back_to_top}
 
 ==== SPA : Angular 14, Bootstrap 5 & Docker
 
@@ -121,6 +214,8 @@ Je garde ce point dans les bonus (voir à la fin de ce README).
 
 Si nous étions dans le cas de fichiers plus volumineux, il serait préférable de les charger sur le serveur (pas dans un fichier temporaire), et de traiter l'import des données en second temps (CRON, Messenger, Command, ...). Nous sommes ici dans un test où le fichier est extrêmement petit et plutôt facile à gérer, mais nous allons conserver ce principe de gestion en deux temps.
 
+{back_to_top}
+
 ==== API
 
 . Création de `MusicGroupUploadController::upload()` avec la route (`POST api/music-groups/upload`).
@@ -130,6 +225,8 @@ Si nous étions dans le cas de fichiers plus volumineux, il serait préférable 
 . Définition du dossier de téléchargement (`/public/uploads` par exemple).
 . Le fichier Excel sera renommer avec un timestamp.
 . Tests avec Insomnia.
+
+{back_to_top}
 
 ==== SPA
 
@@ -156,6 +253,8 @@ Si nous étions dans le cas de fichiers plus volumineux, il serait préférable 
 . Les données déjà présentes en BDD ne sont pas importées.
 . Gestion de la validation des données.
 
+{back_to_top}
+
 ==== SPA
 
 . Tester l'import complet à partir du front, avec la gestion des messages de confirmation.
@@ -170,6 +269,8 @@ Si nous étions dans le cas de fichiers plus volumineux, il serait préférable 
 . Création de `MusicGroupDataController::read()`, avec la route (`GET api/music-groups/data`).
 . Création de `MusicGroupDataService::read()`.
 . Pour la `JsonResponse`, usage du serializer de Symfony pour formatter au format json le tableau récupéré du `MusicGroupDataRepository`.
+
+{back_to_top}
 
 ==== SPA
 
@@ -188,6 +289,8 @@ Si nous étions dans le cas de fichiers plus volumineux, il serait préférable 
 
 . Création de `MusicGroupDataController::delete()`, avec la route (`DELETE api/music-groups/data/{id}`).
 . Création de `MusicGroupDataService::delete()`.
+
+{back_to_top}
 
 ==== SPA
 
@@ -211,6 +314,8 @@ Si nous étions dans le cas de fichiers plus volumineux, il serait préférable 
 . Quand tout est OK, retour dans la réponse JSON des données de la dernière ligne créée.
 . Tests avec Insomnia.
 
+{back_to_top}
+
 ==== SPA
 
 . Création d'un bouton "Ajouter".
@@ -233,6 +338,8 @@ Si nous étions dans le cas de fichiers plus volumineux, il serait préférable 
 . Quand tout est OK, retour dans la réponse JSON des données de la dernière ligne créée.
 . Tests avec Insomnia.
 
+{back_to_top}
+
 ==== SPA
 
 . Ajout d'un bouton "Modifier" à chaque ligne de données.
@@ -250,6 +357,8 @@ Si nous étions dans le cas de fichiers plus volumineux, il serait préférable 
 Je ne sais à quels imprévus je vais faire face et combien de temps je vais mettre pour réaliser toutes ces étapes.
 Selon le temps restant, je ferais un des éléments suivants.
 
+{back_to_top}
+
 ==== Suppressions multiples
 
 . Permettre de sélectionner plusieurs lignes pour les supprimer en une seule fois.
@@ -257,11 +366,15 @@ Selon le temps restant, je ferais un des éléments suivants.
 . Ajouter une coche globale pour tout sélectionner ou désélectionner.
 . Faire apparaître un bouton "Supprimer les lignes cochées" dès qu'une ligne est sélectionnées.
 
+{back_to_top}
+
 ==== Limiter l'accès qu'aux utilisateurs authentifiés
 
 . Mettre en place un système d'authentification côté API avec formulaire à soumettre côté SPA.
 . Afficher les données qu'aux utilisateurs authentifiés.
 . Limiter l'import et l'édition des données qu'aux administrateurs.
+
+{back_to_top}
 
 ==== Utiliser des tests automatiques
 
@@ -271,4 +384,54 @@ Selon le temps restant, je ferais un des éléments suivants.
 
 == Conclusion
 
-[A remplir en fin de test]
+=== Impression générale
+
+*C'est un échec sur le timing ! Je n'ai pas du tout réalisé l'ensemble de ce projet en moins de 7 heures !*
+
+Il m'a fallu pas moins de 2 jours (en temps cumulé), pour développer cette mouture.
+Même si j'avais, à mon premier commit, un plan d'action technique précis à suivre, les implémentations ne se sont pas déroulées pas comme je l'espérais.
+Et malgré le délai dépassé, je voulais tout de même aller jusqu'au bout, pour fournir une fonctionnalité complète, qu'importe le temps que cela me prendrait.
+
+L'expérience a été pour ma part très stimulante, car c'était la première fois que je réalisais d'un seul trait, un projet complet Symfony 6 / PHP 8 / Angular 14, à partir de zéro, de façon "brut" (sans l'aide d'API Platform - on revient aux fondamentaux ^^), entièrement dockerisé, et je n'avais aucune idée de la quantité de choses que je pourrais implémenter sur ce timing. J'ai maintenant une idée précise.
+
+Sur cette mouture, il y a des dizaines de sujets que l'on pourrait largement pousser (gestion fine des erreurs, sérialisation et passages de données entre API et SPA, exploitation avancée du pattern "store like a service", validation avancée de la structure du fichier Excel importé, testing unitaire tant côté API que SPA, ou même l'UX, ...).
+
+À lui seul, ce test pourrait être un workshop qui donnerait du travail pour le reste de l'année !
+
+{back_to_top}
+
+=== Principales problématiques rencontrées et solutions trouvées
+
+==== Sur le podium : la dockerisation du projets
+
+À chaque fois que je touche à la dockerisation d'un projet, c'est toujours un grand moment de magie et d'incertitudes.
+
+Côté Symfony, ça n'a pas loupé : la dernière version de https://github.com/dunglas/symfony-docker ne fonctionnait pas sur mon poste. J'ai dû rechercher et revenir à une version précédente, qui ne causait pas de soucis avec mon KDE Neon.
+
+J'ai aussi rencontré des problèmes de droit d'écriture pour l'import et la sauvegarde des fichiers Excel.
+
+Je souhaitais utiliser https://github.com/PHPOffice/PhpSpreadsheet pour m'aider à l'extraction des données des fichiers Excel, mais il s'avère que cette lib a besoin de `php-gd`, qui n'est pas disponible dans l'image Docker pour Symfony. Après quelques recherches, j'ai décidé d'utiliser https://github.com/spatie/simple-excel, qui ne demandait rien de plus, et qui fait très bien le job.
+
+Beaucoup de difficultés pour exécuter dans le conteneur `database` des commandes `psql` ou pour connecter mon PHPStorm à la BDD. J'ai dû passer par ce trick https://stackoverflow.com/a/69988826/13480534, pour récupérer le `IPAddress`, pour enfin me connecter. Ça donne des commandes du genre :
+
+```
+$ docker-compose run database bash
+bash-5.1# psql -h 172.18.0.2 -p 5432 -U symfony app -W
+```
+
+Côté Angular, j'avais une petite solution maison qui s'est avérée être facile à mettre en place et qui m'a fait gagner du temps.
+
+{back_to_top}
+
+==== Chrome, Access-Control-Allow-Origin & Site dangereux
+
+Pas de soucis pour faire des appels sur l'API avec l'Insomnia, mais dès que la SPA pointait directement l'API dans Chrome, on se retrouvait avec une erreur `Access-Control-Allow-Origin`. Soucis de CORS réglés avec https://github.com/nelmio/NelmioCorsBundle.
+
+Pour éviter de vous retrouver dans la SPA avec un tableau vide et une erreur du type `GET https://localhost/api/music-groups/data net::ERR_CERT_AUTHORITY_INVALID`, il faut autoriser l'accès dans Chrome à l'API, en allant sur https://localhost, et en cliquant sur le bouton *Continuer vers le site localhost (dangereux)* :
+
+image::doc/img/chrome-erreur-confidentialite.png[]
+
+Après cela, la SPA récupère correctement les données de l'API.
+
+{back_to_top}
+
