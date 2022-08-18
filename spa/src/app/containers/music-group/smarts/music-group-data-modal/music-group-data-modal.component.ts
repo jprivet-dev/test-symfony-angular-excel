@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
@@ -7,7 +7,13 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
   styleUrls: ['./music-group-data-modal.component.scss'],
 })
 export class MusicGroupDataModalComponent {
-  @Input() name: string = '';
+  constructor(private activeModal: NgbActiveModal) {}
 
-  constructor(public activeModal: NgbActiveModal) {}
+  dismiss(): void {
+    this.activeModal.dismiss();
+  }
+
+  close(): void {
+    this.activeModal.close();
+  }
 }

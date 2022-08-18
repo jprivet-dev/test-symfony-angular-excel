@@ -42,7 +42,6 @@ export class MusicGroupDataComponent implements OnDestroy {
 
   open(): void {
     const modalRef = this.modalService.open(MusicGroupDataModalComponent);
-    modalRef.componentInstance.name = 'World';
   }
 
   ngOnDestroy(): void {

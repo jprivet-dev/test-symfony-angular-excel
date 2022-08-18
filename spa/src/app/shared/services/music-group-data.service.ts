@@ -33,4 +33,12 @@ export class MusicGroupDataService {
         )
       );
   }
+
+  create(formData: any): Observable<MusicGroupData> {
+    return this.http
+      .post<MusicGroupData>(`https://localhost/api/music-groups/data`, formData)
+      .pipe(
+        tap((data) => this.dataSubject.next([...this.dataSubject.value, data]))
+      );
+  }
 }

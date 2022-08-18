@@ -4,18 +4,12 @@
     type="button"
     class="btn-close"
     aria-label="Close"
-    (click)="activeModal.dismiss('Cross click')"
+    (click)="dismiss()"
   ></button>
 </div>
 <div class="modal-body">
-  <app-music-group-data-form></app-music-group-data-form>
+  <app-music-group-data-form
+    (submitEvent)="close()"
+  ></app-music-group-data-form>
 </div>
-<div class="modal-footer">
-  <button
-    type="button"
-    class="btn btn-outline-dark"
-    (click)="activeModal.close('Close click')"
-  >
-    Annuler
-  </button>
-</div>
+<div class="modal-footer"></div>

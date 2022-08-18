@@ -6,6 +6,7 @@ import {
   NgbDatepickerModule,
   NgbToastModule,
 } from '@ng-bootstrap/ng-bootstrap';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [MusicGroupFileUploadFormComponent, ToastsComponent],
@@ -14,6 +15,7 @@ import {
     MusicGroupFileUploadFormComponent,
     ToastsComponent,
     NgbDatepickerModule,
+    ReactiveFormsModule,
   ],
 })
 export class SharedModule {}
