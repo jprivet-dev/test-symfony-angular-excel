@@ -41,4 +41,24 @@ export class MusicGroupDataService {
         tap((data) => this.dataSubject.next([...this.dataSubject.value, data]))
       );
   }
+
+  update(id: number, formData: any): Observable<MusicGroupData> {
+    return this.http
+      .put<MusicGroupData>(
+        `https://localhost/api/music-groups/data/${id}`,
+        formData
+      )
+      .pipe(
+        tap((data) =>
+          this.dataSubject.next(
+            this.dataSubject.value.map((d) => {
+              if (d.id === id) {
+                return { ...d, ...data };
+              }
+              return d;
+            })
+          )
+        )
+      );
+  }
 }
